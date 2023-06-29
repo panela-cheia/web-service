@@ -8,6 +8,8 @@ from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 import boto3
 
+from botocore.exceptions import BotoCoreError
+
 load_dotenv('.env')
 
 app = Flask(__name__)
@@ -27,19 +29,12 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower(
            ) in app.config['ALLOWED_EXTENSIONS']
 
-
-@app.route('/posts', methods=['GET'])
-def get_posts():
-    # Implement your logic to retrieve posts from the database
-    posts = []
-
-    return jsonify(posts)
-
-
 def upload_local(file, filename):
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(file_path)
-    return file_path
+    base_url = os.getenv('BASE_URL')
+    file_url = f'{base_url}/files/{filename}'
+    return file_url
 
 def upload_s3(file, filename):
     s3_bucket = os.getenv('S3_BUCKET_NAME')
@@ -77,16 +72,54 @@ def create_post():
 
     return jsonify(post), 201
 
-@app.route('/posts/<id>', methods=['DELETE'])
-def delete_post(id):
-    # Implement your logic to delete the post from the database
 
-    return '', 204
+@app.route('/posts/<filename>', methods=['DELETE'])
+def delete_file(filename):
+    # Verifique o valor de UPLOAD_CONFIG_DEVELOPMENT para determinar o local de upload
+    upload_option = os.getenv('UPLOAD_CONFIG_DEVELOPMENT')
 
+    if upload_option == 'local':
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            return '', 204
+        else:
+            return jsonify({'error': 'File not found'}), 404
+
+    elif upload_option == 's3':
+        s3_bucket = os.getenv('S3_BUCKET_NAME')
+        s3_client = boto3.client('s3')
+        try:
+            s3_client.delete_object(Bucket=s3_bucket, Key=filename)
+            return '', 204
+        except BotoCoreError as e:
+            return jsonify({'error': str(e)}), 500
+
+    else:
+        return jsonify({'error': 'Invalid upload option'}), 400
+
+@app.route('/posts', methods=['GET'])
+def list_files_in_bucket():
+    upload_option = os.getenv('UPLOAD_CONFIG_DEVELOPMENT')
+    if upload_option == 's3':
+        s3_bucket = os.getenv('S3_BUCKET_NAME')
+        s3_client = boto3.client('s3')
+        response = s3_client.list_objects_v2(Bucket=s3_bucket)
+        
+        files = []
+        if 'Contents' in response:
+            for obj in response['Contents']:
+                file_key = obj['Key']
+                file_url = f'https://{s3_bucket}.s3.amazonaws.com/{file_key}'
+                files.append({'key': file_key, 'url': file_url})
+        
+        return files
+    else:
+        return jsonify({'error': 'upload file option is local!'}), 400
 
 @app.route('/files/<filename>')
 def serve_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    return send_from_directory(os.path.abspath(app.config['UPLOAD_FOLDER']), filename)
 
 @app.route('/')
 def index():
@@ -94,4 +127,4 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(port=3333,debug=True)
+    app.run(port=3333, debug=True)
