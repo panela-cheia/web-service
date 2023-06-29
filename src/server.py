@@ -10,6 +10,11 @@ import boto3
 
 from botocore.exceptions import BotoCoreError
 
+import openai
+import json
+
+import smtplib
+
 load_dotenv('.env')
 
 app = Flask(__name__)
@@ -29,12 +34,14 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower(
            ) in app.config['ALLOWED_EXTENSIONS']
 
+
 def upload_local(file, filename):
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(file_path)
     base_url = os.getenv('BASE_URL')
     file_url = f'{base_url}/files/{filename}'
     return file_url
+
 
 def upload_s3(file, filename):
     s3_bucket = os.getenv('S3_BUCKET_NAME')
@@ -98,6 +105,7 @@ def delete_file(filename):
     else:
         return jsonify({'error': 'Invalid upload option'}), 400
 
+
 @app.route('/posts', methods=['GET'])
 def list_files_in_bucket():
     upload_option = os.getenv('UPLOAD_CONFIG_DEVELOPMENT')
@@ -105,14 +113,14 @@ def list_files_in_bucket():
         s3_bucket = os.getenv('S3_BUCKET_NAME')
         s3_client = boto3.client('s3')
         response = s3_client.list_objects_v2(Bucket=s3_bucket)
-        
+
         files = []
         if 'Contents' in response:
             for obj in response['Contents']:
                 file_key = obj['Key']
                 file_url = f'https://{s3_bucket}.s3.amazonaws.com/{file_key}'
                 files.append({'key': file_key, 'url': file_url})
-        
+
         return files
     elif upload_option == 'local':
         upload_folder = app.config['UPLOAD_FOLDER']
@@ -132,13 +140,115 @@ def list_files_in_bucket():
     else:
         return jsonify({'error': 'Invalid upload option'}), 400
 
+
 @app.route('/files/<filename>')
 def serve_file(filename):
     return send_from_directory(os.path.abspath(app.config['UPLOAD_FOLDER']), filename)
 
+
 @app.route('/')
 def index():
     return jsonify({'ok': 'api is running!'}), 200
+
+
+@app.route("/recipes/description", methods=['POST'])
+def description_recipe():
+    # Verificar se o corpo da solicitação contém o nome da receita
+    if 'name' not in request.json:
+        return jsonify({'error': 'Name of the recipe is required.'}), 400
+
+    # Obter o nome da receita a partir do corpo da solicitação
+    nome_receita = request.json['name']
+
+    # Prompt inicial para a geração de descrição da receita
+    prompt = f"Aqui está uma descrição da receita de {nome_receita} com no máximo 40 caracteres, querendo convencer outras pessoas a fazerem a receita:"
+
+    # Parâmetros para a chamada da API do ChatGPT
+    params = {
+        'engine': 'text-davinci-003',
+        'prompt': prompt,
+        'max_tokens': 40,  # Defina o número máximo de tokens na resposta
+        # Controla a aleatoriedade das respostas (0.2 é mais determinístico, 0.8 é mais criativo)
+        'temperature': 0.8,
+        'n': 1,  # Gere apenas uma resposta
+        'stop': None  # Não defina uma palavra de parada para a resposta
+    }
+
+    try:
+        openai.api_key = os.getenv('OPENAI_KEY')
+        # Fazendo a chamada para a API do ChatGPT
+        response = openai.Completion.create(**params)
+
+        # Obtendo a descrição gerada
+        descricao = response.choices[0].text.strip()
+
+        return jsonify({'description': descricao}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route("/recipes/ingredients", methods=['POST'])
+def ingredients_recipe():
+    # Verificar se o corpo da solicitação contém o nome da receita
+    if 'name' not in request.json:
+        return jsonify({'error': 'Name of the recipe is required.'}), 400
+    if 'description' not in request.json:
+        return jsonify({'error': 'Name of the recipe is required.'}), 400
+
+    # Obter o nome da receita a partir do corpo da solicitação
+    nome_receita = request.json['name']
+    descricao_receita = request.json['description']
+
+    prompt = f"Sendo uma receita culinária de nome {nome_receita}, com a seguinte descrição: '{descricao_receita}',"
+    prompt += "informe a lista de ingredientes possíveis da receita\n. Cada ingrediente é uma tripla com os campos:"
+    prompt += "'name' (String), 'amount' (Integer) e 'unit' (String).\n"
+    prompt += "A lista de unidades possíveis é a seguinte:\n\n"
+    prompt += "['Unidade','Miligrama (mg)','Copo','Fio','Grama (g)','Pitada','Litro (l)','Raspas',"
+    prompt += "'Tablete','Ramo','Colher de chá (c.c.)','Mililitro (ml)','Xícara (xíc.)',"
+    prompt += "'Filete','Colher de sopa (c.s.)','Quilograma (kg)','Punhado']."
+    prompt += "Retorne a lista de ingredientes como uma string JSON contendo em cada objeto os campos 'name', 'amount' e 'unit'."
+    prompt += "Certifique-se de que a string JSON esteja corretamente formatada, com cada objeto de ingredientes separado por vírgula e o array de ingredientes devidamente fechado com colchetes no final."
+    # Parâmetros para a chamada da API do ChatGPT
+    params = {
+        'engine': 'text-davinci-003',
+        'prompt': prompt,
+        'max_tokens': 400,  # Defina o número máximo de tokens na resposta
+        # Controla a aleatoriedade das respostas (0.2 é mais determinístico, 0.8 é mais criativo)
+        'temperature': 0.2,
+        'n': 1,  # Gere apenas uma resposta
+        'stop': None  # Não defina uma palavra de parada para a resposta
+    }
+
+    try:
+
+        openai.api_key = os.getenv('OPENAI_KEY')
+        # Fazendo a chamada para a API do ChatGPT
+        response = openai.Completion.create(**params)
+
+        # Obtendo a descrição gerada
+        ingredients = response.choices[0].text.strip()
+
+        ingredients_json = json.loads(ingredients)
+
+        return jsonify({'ingredients': ingredients_json}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+
+@app.route("/emails", methods=['POST'])
+def send_mail():
+    # list of email_id to send the mail
+    li = ["vinis.o.mendes@ufv.br"]
+    
+    for dest in li:
+        s = smtplib.SMTP('smtp.gmail.com', 587)
+        s.starttls()
+        s.login("ufvcafbots@gmail.com", "UFV22ufv")
+        message = "OLAAA"
+        s.sendmail("ufvcafbots@gmail.com", dest, message)
+        s.quit()
 
 
 if __name__ == '__main__':
