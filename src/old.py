@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'tmp/uploads'
+app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(__file__), 'tmp/uploads')
 app.config['ALLOWED_EXTENSIONS'] = set(['jpg', 'jpeg', 'png', 'gif'])
 
 
@@ -76,6 +76,5 @@ def serve_file(filename):
 def index():
     return jsonify({'ok': 'api is running!'}), 200
 
-
 if __name__ == '__main__':
-    app.run(port=3333,debug=True)
+    app.run(port=3333, debug=True)
