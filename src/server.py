@@ -2,7 +2,7 @@ import os
 import random
 import string
 
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory,Response
 from werkzeug.utils import secure_filename
 
 from dotenv import load_dotenv
@@ -13,7 +13,7 @@ from botocore.exceptions import BotoCoreError
 import openai
 import json
 
-import smtplib
+import requests
 
 load_dotenv('.env')
 
@@ -215,7 +215,7 @@ def ingredients_recipe():
         'prompt': prompt,
         'max_tokens': 400,  # Defina o número máximo de tokens na resposta
         # Controla a aleatoriedade das respostas (0.2 é mais determinístico, 0.8 é mais criativo)
-        'temperature': 0.2,
+        'temperature': 0.1,
         'n': 1,  # Gere apenas uma resposta
         'stop': None  # Não defina uma palavra de parada para a resposta
     }
@@ -236,20 +236,37 @@ def ingredients_recipe():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
-
 @app.route("/emails", methods=['POST'])
-def send_mail():
-    # list of email_id to send the mail
-    li = ["vinis.o.mendes@ufv.br"]
-    
-    for dest in li:
-        s = smtplib.SMTP('smtp.gmail.com', 587)
-        s.starttls()
-        s.login("ufvcafbots@gmail.com", "UFV22ufv")
-        message = "OLAAA"
-        s.sendmail("ufvcafbots@gmail.com", dest, message)
-        s.quit()
+def send_email():
+    try:
+            # Endpoint da API para envio de e-mails
+        endpoint = os.getenv('MAILGUN_BASE_URL') + "/messages"
 
+        # Parâmetros da requisição
+        params = {
+            'from': "Excited User luciano.alcantara@ufv.br",
+            'to': ["vinicius.o.mendes@ufv.br"],
+            'subject': "Hello",
+            'text': "Testing some Mailgun awesomeness!"
+        }
+
+        # Autenticação com a chave de API do Mailgun
+        auth = ('api', os.getenv('MAILGUN_API_KEY'))
+
+        # Enviar a requisição POST para a API do Mailgun
+        response = requests.post(endpoint, auth=auth, data=params)
+
+        # Verificar o status da resposta
+        if response.status_code == 200:
+            print('E-mail enviado com sucesso!')
+        else:
+            print('Erro ao enviar o e-mail.')
+            print(response.text)
+
+        return jsonify({'ok': True}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+       
 
 if __name__ == '__main__':
     app.run(port=3333, debug=True)
