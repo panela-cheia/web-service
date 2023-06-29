@@ -114,8 +114,23 @@ def list_files_in_bucket():
                 files.append({'key': file_key, 'url': file_url})
         
         return files
+    elif upload_option == 'local':
+        upload_folder = app.config['UPLOAD_FOLDER']
+        file_names = os.listdir(upload_folder)
+        files = []
+
+        for file_name in file_names:
+            if file_name == '.gitkeep':
+                continue  # Ignorar o arquivo .gitkeep
+
+            file_path = os.path.join(upload_folder, file_name)
+            file_url = f'{request.host_url}files/{file_name}'
+            files.append({'name': file_name, 'url': file_url})
+
+        return jsonify(files)
+
     else:
-        return jsonify({'error': 'upload file option is local!'}), 400
+        return jsonify({'error': 'Invalid upload option'}), 400
 
 @app.route('/files/<filename>')
 def serve_file(filename):
