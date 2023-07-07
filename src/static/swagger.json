@@ -1,0 +1,32 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Panela cheia API",
+        "description": " 🥘 Seu livro de receitas onde você estiver",
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/rota1": {
+            "get": {
+                "summary": "Descrição da Rota 1",
+                "description": "Detalhes da Rota 1",
+                "responses": {
+                    "200": {
+                        "description": "Resposta bem-sucedida"
+                    }
+                }
+            }
+        },
+        "/api/rota2": {
+            "post": {
+                "summary": "Descrição da Rota 2",
+                "description": "Detalhes da Rota 2",
+                "responses": {
+                    "200": {
+                        "description": "Resposta bem-sucedida"
+                    }
+                }
+            }
+        }
+    }
+}

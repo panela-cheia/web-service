@@ -9,7 +9,7 @@ from modules.recipes.repositories.recipe_repository import RecipeRepository
 # useCase
 from modules.recipes.useCases.create_recipe_usecase import CreateRecipeUseCase,CreateRecipeDTO
 
-from utils.convert_list_convert_to_ingredient_dtos import convert_list_to_ingredient_dtos
+from utils.converters.convert_list_convert_to_ingredient_dtos import convert_list_to_ingredient_dtos
 
 @Pyro5.server.expose
 class CreateRecipeAdapter(object):

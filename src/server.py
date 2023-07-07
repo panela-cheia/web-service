@@ -1,21 +1,21 @@
 import os
 import random
 import string
-
-from flask import Flask, request, jsonify, send_from_directory, Response
-from werkzeug.utils import secure_filename
-
-from dotenv import load_dotenv
-import boto3
-
-from botocore.exceptions import BotoCoreError
+import json
 
 import openai
-import json
+import boto3
 
 import requests
 
-from config.app_url import PORT
+from dotenv import load_dotenv
+from flask import Flask, request, jsonify, send_from_directory
+from werkzeug.utils import secure_filename
+from botocore.exceptions import BotoCoreError
+
+
+from config.app import PORT
+from config.swagger import SWAGGER_URL,SWAGGERUI_BLUEPRINT
 
 load_dotenv('.env')
 
@@ -301,4 +301,8 @@ def create_post_ai():
         'probability':probability}), 201
 
 if __name__ == '__main__':
+
+    # Adicione a blueprint do Swagger ao aplicativo
+    app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
+
     app.run(port=PORT, debug=True)

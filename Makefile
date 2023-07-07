@@ -1,7 +1,5 @@
-MAIN = src/main.py
-
-all:
-	python3 -B $(MAIN)
+rmi:
+	python3 -B src/rmi.py
 
 pyro:
 	pyro5-ns -n localhost
