@@ -1,6 +1,4 @@
 import os
-import random
-import string
 import json
 
 import openai
@@ -13,44 +11,19 @@ from flask import Flask, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 from botocore.exceptions import BotoCoreError
 
-
 from config.app import PORT
-from config.swagger import SWAGGER_URL,SWAGGERUI_BLUEPRINT
+from config.swagger import SWAGGER_URL, SWAGGERUI_BLUEPRINT
+
+from utils.files.generate_random_filename import generate_random_filename
+from utils.files.upload_local import upload_local
+
+from shared.infra.aws.S3 import s3
 
 load_dotenv('.env')
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'tmp/uploads'
 app.config['ALLOWED_EXTENSIONS'] = set(['jpg', 'jpeg', 'png', 'gif'])
-
-def generate_random_filename(filename):
-    random_string = ''.join(random.choices(
-        string.ascii_letters + string.digits, k=16))
-    name, ext = os.path.splitext(filename)
-    random_filename = f'{random_string}-{name}{ext}'
-    return random_filename
-
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower(
-           ) in app.config['ALLOWED_EXTENSIONS']
-
-
-def upload_local(file, filename):
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    file.save(file_path)
-    base_url = os.getenv('BASE_URL')
-    file_url = f'{base_url}/files/{filename}'
-    return file_url
-
-
-def upload_s3(file, filename):
-    s3_bucket = os.getenv('S3_BUCKET_NAME')
-    s3_client = boto3.client('s3')
-    s3_client.upload_fileobj(file, s3_bucket, filename)
-    file_url = f'https://{s3_bucket}.s3.amazonaws.com/{filename}'
-    return file_url
 
 @app.route('/posts', methods=['POST'])
 def create_post():
@@ -67,9 +40,10 @@ def create_post():
     file_url = None
 
     if upload_option == 'local':
-        file_url = upload_local(file, filename)
+        file_url = upload_local(file=file, filename=filename,app=app)
     elif upload_option == 's3':
-        file_url = upload_s3(file, filename)
+        s3.upload(file, filename)
+        file_url = s3.file_url(filename)
     else:
         return jsonify({'error': 'Invalid upload option'}), 400
 
@@ -80,6 +54,7 @@ def create_post():
     }
 
     return jsonify(post), 201
+
 
 @app.route('/posts/<filename>', methods=['DELETE'])
 def delete_file(filename):
@@ -105,6 +80,7 @@ def delete_file(filename):
 
     else:
         return jsonify({'error': 'Invalid upload option'}), 400
+
 
 @app.route('/posts', methods=['GET'])
 def list_files_in_bucket():
@@ -251,14 +227,16 @@ def create_post_ai():
     file_url = None
 
     if upload_option == 'local':
-        file_url = upload_local(file, filename)
+        file_url = upload_local(file=file, filename=filename,app=app)
     elif upload_option == 's3':
-        file_url = upload_s3(file, filename)
+        s3.upload(file, filename)
+
+        file_url = s3.file_url(filename)
     else:
         return jsonify({'error': 'Invalid upload option'}), 400
 
     api_key = os.getenv('SPOONACULAR_API_KEY')
-    
+
     response = requests.get(
         f'https://api.spoonacular.com/food/images/classify?apiKey={api_key}&imageUrl={file_url}',
     )
@@ -270,14 +248,14 @@ def create_post_ai():
     probability = data['probability']
 
     data_response = {
-       category,
-       probability
+        category,
+        probability
     }
 
     prompt = "Com base nos dados fornecidos pela API do spoonacular,"
     prompt += "Informe qual é a possível receita do usuário,Informe em portugues o nome da receita (traduza o nome se vindo de outra lingua) e em qual categoria se enquadra"
     prompt += f"Os dados são: {data_response}"
-    
+
     # Parâmetros para a chamada da API do ChatGPT
     params = {
         'engine': 'text-davinci-003',
@@ -296,9 +274,10 @@ def create_post_ai():
     # Obtendo a descrição gerada
     recipe = response_open_api.choices[0].text.strip()
 
-    return jsonify({ 'description':recipe,
-        'category':category,
-        'probability':probability}), 201
+    return jsonify({'description': recipe,
+                    'category': category,
+                    'probability': probability}), 201
+
 
 if __name__ == '__main__':
 
