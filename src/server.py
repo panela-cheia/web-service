@@ -15,12 +15,13 @@ import json
 
 import requests
 
+from config.app_url import PORT
+
 load_dotenv('.env')
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'tmp/uploads'
 app.config['ALLOWED_EXTENSIONS'] = set(['jpg', 'jpeg', 'png', 'gif'])
-
 
 def generate_random_filename(filename):
     random_string = ''.join(random.choices(
@@ -51,7 +52,6 @@ def upload_s3(file, filename):
     file_url = f'https://{s3_bucket}.s3.amazonaws.com/{filename}'
     return file_url
 
-
 @app.route('/posts', methods=['POST'])
 def create_post():
     if 'file' not in request.files:
@@ -81,7 +81,6 @@ def create_post():
 
     return jsonify(post), 201
 
-
 @app.route('/posts/<filename>', methods=['DELETE'])
 def delete_file(filename):
     # Verifique o valor de UPLOAD_CONFIG_DEVELOPMENT para determinar o local de upload
@@ -106,7 +105,6 @@ def delete_file(filename):
 
     else:
         return jsonify({'error': 'Invalid upload option'}), 400
-
 
 @app.route('/posts', methods=['GET'])
 def list_files_in_bucket():
@@ -302,6 +300,5 @@ def create_post_ai():
         'category':category,
         'probability':probability}), 201
 
-
 if __name__ == '__main__':
-    app.run(port=3333, debug=True)
+    app.run(port=PORT, debug=True)
