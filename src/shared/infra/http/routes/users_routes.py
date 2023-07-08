@@ -55,3 +55,57 @@ def auth_username():
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+
+@users_routes.route('/users/follow', methods=["POST"])
+def follow():
+    user_id = request.json["userId"]
+    follow_id = request.json["followId"]
+
+    try:
+        user = Proxy("PYRONAME:adapters.follow_user_adapter").execute(
+            user_id=user_id,
+            follow_id=follow_id
+        )
+
+        return jsonify({'data': user}), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+
+@users_routes.route('/users/unfollow', methods=["POST"])
+def unfollow():
+    user_id = request.json["userId"]
+    unfollow_id = request.json["unfollowId"]
+
+    try:
+        user = Proxy("PYRONAME:adapters.unfollow_user_adapter").execute(
+            user_id=user_id,
+            unfollow_id=unfollow_id
+        )
+
+        return jsonify({'data': user}), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@users_routes.route('/users/all', methods=["GET"])
+def listAll():
+    try:
+        data = Proxy("PYRONAME:adapters.list_all_users_adapters").execute()
+
+        return jsonify({'data': data}), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@users_routes.route('/users/<id>/others', methods=["GET"])
+def listOthers(id):
+    try:
+        data = Proxy("PYRONAME:adapters.list_others_users_adapter").execute(id=id)
+
+        return jsonify({'data': data}), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

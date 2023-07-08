@@ -12,6 +12,11 @@ class ListAllUsersUseCase(object):
         serialized_users = []
 
         for user in users:
-            serialized_users.append(serialize_user(user))
+            serialized_users.append({
+                "id":user.id,
+                "name":user.name,
+                "username":user.username,
+                "email":user.email
+            })
       
         return serialized_users
