@@ -1,3 +1,7 @@
+import os
+import json
+import openai
+
 from flask import Blueprint, jsonify, request
 from Pyro5.api import Proxy
 
@@ -65,5 +69,77 @@ def search():
 
         return jsonify({'data': recipes}), 201
     
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@recipes_routes.route("/recipes/openai/description", methods=['GET'])
+def description_recipe():
+    nome_receita = request.args.get("name")
+
+    # Prompt inicial para a geração de descrição da receita
+    prompt = f"Aqui está uma descrição da receita de {nome_receita} com no máximo 40 caracteres, querendo convencer outras pessoas a fazerem a receita:"
+
+    # Parâmetros para a chamada da API do ChatGPT
+    params = {
+        'engine': 'text-davinci-003',
+        'prompt': prompt,
+        'max_tokens': 40,  # Defina o número máximo de tokens na resposta
+        # Controla a aleatoriedade das respostas (0.2 é mais determinístico, 0.8 é mais criativo)
+        'temperature': 0.8,
+        'n': 1,  # Gere apenas uma resposta
+        'stop': None  # Não defina uma palavra de parada para a resposta
+    }
+
+    try:
+        openai.api_key = os.getenv('OPENAI_KEY')
+        # Fazendo a chamada para a API do ChatGPT
+        response = openai.Completion.create(**params)
+
+        # Obtendo a descrição gerada
+        descricao = response.choices[0].text.strip()
+
+        return jsonify({'description': descricao}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@recipes_routes.route("/recipes/openai/ingredients", methods=['GET'])
+def ingredients_recipe():
+    nome_receita = request.args.get("name")
+    descricao_receita = request.args.get("description")
+
+    prompt = f"Sendo uma receita culinária de nome {nome_receita}, com a seguinte descrição: '{descricao_receita}',"
+    prompt += "informe a lista de ingredientes possíveis da receita\n. Cada ingrediente é uma tripla com os campos:"
+    prompt += "'name' (String), 'amount' (Integer) e 'unit' (String).\n"
+    prompt += "A lista de unidades possíveis é a seguinte:\n\n"
+    prompt += "['Unidade','Miligrama (mg)','Copo','Fio','Grama (g)','Pitada','Litro (l)','Raspas',"
+    prompt += "'Tablete','Ramo','Colher de chá (c.c.)','Mililitro (ml)','Xícara (xíc.)',"
+    prompt += "'Filete','Colher de sopa (c.s.)','Quilograma (kg)','Punhado']."
+    prompt += "Retorne a lista de ingredientes como uma string JSON contendo em cada objeto os campos 'name', 'amount' e 'unit'."
+    prompt += "Certifique-se de que a string JSON esteja corretamente formatada, com cada objeto de ingredientes separado por vírgula e o array de ingredientes devidamente fechado com colchetes no final."
+    # Parâmetros para a chamada da API do ChatGPT
+    params = {
+        'engine': 'text-davinci-003',
+        'prompt': prompt,
+        'max_tokens': 400,  # Defina o número máximo de tokens na resposta
+        # Controla a aleatoriedade das respostas (0.2 é mais determinístico, 0.8 é mais criativo)
+        'temperature': 0.1,
+        'n': 1,  # Gere apenas uma resposta
+        'stop': None  # Não defina uma palavra de parada para a resposta
+    }
+
+    try:
+
+        openai.api_key = os.getenv('OPENAI_KEY')
+        # Fazendo a chamada para a API do ChatGPT
+        response = openai.Completion.create(**params)
+
+        # Obtendo a descrição gerada
+        ingredients = response.choices[0].text.strip()
+
+        ingredients_json = json.loads(ingredients)
+
+        return jsonify({'ingredients': ingredients_json}), 200
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500

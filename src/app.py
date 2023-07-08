@@ -161,9 +161,43 @@ def create_post_ai():
                     'data':proxy_response
                 }), 201
 
+@app.route('/files/list', methods=['GET'])
+def list_files_in_bucket():
+    upload_option = os.getenv('UPLOAD_CONFIG_DEVELOPMENT')
+    
+    if upload_option == 's3':
+        response = s3.list_objs()
+
+        files = []
+        if 'Contents' in response:
+            for obj in response['Contents']:
+                file_key = obj['Key']
+                file_url = s3.file_url(file_key)
+                files.append({'key': file_key, 'url': file_url})
+
+        return files
+    elif upload_option == 'local':
+        upload_folder = app.config['UPLOAD_FOLDER']
+        file_names = os.listdir(upload_folder)
+        files = []
+
+        for file_name in file_names:
+            if file_name == '.gitkeep':
+                continue  # Ignorar o arquivo .gitkeep
+
+            file_path = os.path.join(upload_folder, file_name)
+            file_url = f'{request.host_url}files/{file_name}'
+            files.append({'name': file_name, 'url': file_url})
+
+        return jsonify(files)
+
+    else:
+        return jsonify({'error': 'Invalid upload option'}), 400
+    
 @app.route('/')
 def index():
     return jsonify({'ok': 'api is running! Time to cooking 🥘'}), 200
+
 
 # Register barn routes
 app.register_blueprint(barn_routes)

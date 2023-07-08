@@ -39,3 +39,19 @@ def auth():
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+@users_routes.route('/users/login-username', methods=["POST"])
+def auth_username():
+    username = request.json["username"]
+    password = request.json["password"]
+
+    try:
+        user = Proxy("PYRONAME:adapters.login_user_with_username_adapter").execute(
+            username=username,
+            password=password
+        )
+
+        return jsonify({'data': user}), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

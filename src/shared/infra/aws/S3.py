@@ -24,5 +24,8 @@ class S3Client:
     def delete(self,filename):
         self.s3_client.delete_object(Bucket=self.s3_bucket, Key=filename)
 
+    def list_objs(self):
+        return self.s3_client.list_objects_v2(Bucket=self.s3_bucket)
+
 
 s3 = S3Client()
