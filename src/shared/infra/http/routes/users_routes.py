@@ -22,3 +22,20 @@ def create_user():
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+
+@users_routes.route('/users/login', methods=["POST"])
+def auth():
+    email = request.json["email"]
+    password = request.json["password"]
+
+    try:
+        user = Proxy("PYRONAME:adapters.user_login_adapter").execute(
+            email=email,
+            password=password
+        )
+
+        return jsonify({'data': user}), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
