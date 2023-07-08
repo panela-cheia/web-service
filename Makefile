@@ -5,7 +5,7 @@ pyro:
 	pyro5-ns -n localhost
 
 server:
-	python3 -B src/server.py
+	python3 -B src/app.py
 
 venv:
 	python3 -m venv . 
