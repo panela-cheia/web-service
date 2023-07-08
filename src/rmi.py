@@ -85,13 +85,13 @@ if __name__ == "__main__":
         FindFileByNameAdapter:"adapters.find_file_by_name_adapter",
 
         # DIVE ADAPTERS
-        CreateDiveAdapter:"adapters.create_dive_adapter", #post
-        EnterDiveAdapter:"adapters.enter_dive_adapter", #post
-        ExitDiveAdapter:"adapters.exit_dive_adapter", #put
-        ListDiveRecipeAdapter:"adapters.list_dive_recipes_adapter", #get
-        ListUsersAdapter:"adapters.list_users_adapter", #get
-        SearchDiveAdapter:"adapters.search_dive_adapter", #get
-        UpdateDiveAdapter:"adapters.update_dive_adapter", #put
+        CreateDiveAdapter:"adapters.create_dive_adapter",
+        EnterDiveAdapter:"adapters.enter_dive_adapter",
+        ExitDiveAdapter:"adapters.exit_dive_adapter",
+        ListDiveRecipeAdapter:"adapters.list_dive_recipes_adapter",
+        ListUsersAdapter:"adapters.list_users_adapter",
+        SearchDiveAdapter:"adapters.search_dive_adapter",
+        UpdateDiveAdapter:"adapters.update_dive_adapter",
         
         # INGREDIENTS UNIT ADAPTERS
         CreateIngredientsUnitAdapter:"adapters.create_ingredients_unit_adapter",
