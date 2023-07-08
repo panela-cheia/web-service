@@ -36,7 +36,7 @@ def remove_recipe():
         return jsonify({"error": str(e)}), 500
     
 @barn_routes.route('/barn/search', methods=["GET"])
-def remove_recipe():
+def search_recipe():
     barnId = request.json["barnId"]
     recipeName = request.json["recipeId"]
     
