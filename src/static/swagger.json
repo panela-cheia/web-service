@@ -5,25 +5,285 @@
         "description": " 🥘 Seu livro de receitas onde você estiver",
         "version": "1.0"
     },
+    "tags": [
+        {
+            "name": "ingredients_unity",
+            "description": "Endpoints relacionados a tipos de ingredientes"
+        },
+        {
+            "name": "dives",
+            "description": "Endpoints relacionados a butecos"
+        }
+    ],
     "paths": {
-        "/api/rota1": {
-            "get": {
-                "summary": "Descrição da Rota 1",
-                "description": "Detalhes da Rota 1",
+        "/ingredients-unit": {
+            "post": {
+                "summary": "Cria uma unidade de ingrediente",
+                "description": "Cria uma nova unidade de ingrediente",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "required": true,
+                        "type": "text",
+                        "description": "Nome da unidade de ingrediente",
+                        "example": {
+                            "name": "Kg"
+                        }
+                    }
+                ],
+                "tags": [
+                    "ingredients_unity"
+                ],
                 "responses": {
-                    "200": {
-                        "description": "Resposta bem-sucedida"
+                    "201": {
+                        "description": "Unidade de ingrediente criada com sucesso"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
                     }
                 }
             }
         },
-        "/api/rota2": {
-            "post": {
-                "summary": "Descrição da Rota 2",
-                "description": "Detalhes da Rota 2",
+        "/delete_ingredients/{ingredients_unit_id}": {
+            "delete": {
+                "summary": "Exclui uma unidade de ingrediente",
+                "description": "Exclui uma unidade de ingrediente com base no ID fornecido",
+                "parameters": [
+                    {
+                        "name": "ingredients_unit_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID da unidade de ingrediente como parâmetro de rota"
+                    }
+                ],
+                "tags": [
+                    "ingredients_unity"
+                ],
                 "responses": {
                     "200": {
-                        "description": "Resposta bem-sucedida"
+                        "description": "Unidade de ingrediente excluída com sucesso"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/list_ingredients_unit": {
+            "get": {
+                "summary": "Lista as unidades de ingredientes",
+                "description": "Retorna uma lista das unidades de ingredientes",
+                "tags": [
+                    "ingredients_unity"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de unidades de ingredientes retornada com sucesso"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/dives": {
+            "post": {
+                "summary": "Cria um buteco",
+                "description": "Cria um novo buteco",
+                "tags": [
+                    "dives"
+                ],
+                "parameters": [
+                    {
+                        "name": "create",
+                        "in": "body",
+                        "required": true,
+                        "type": "text",
+                        "description": "Criar buteco",
+                        "example": {
+                            "name": "Buteco do Zé",
+                            "description": "Descrição do buteco",
+                            "fileId": "Id do arquivo",
+                            "userId": "Id do user"
+                        }
+                    } 
+                ],
+                "responses": {
+                    "201": {
+                        "description": "buteco criado com sucesso"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/dives/enter_dive": {
+            "post": {
+                "summary": "Entra em um buteco",
+                "description": "Entra em um buteco específico",
+                "tags": [
+                    "dives"
+                ],
+                "parameters": [
+                    {
+                        "name": "enter",
+                        "in": "body",
+                        "required": true,
+                        "type": "object",
+                        "description": "Criar buteco",
+                        "example": {
+                            "userId": "Id do usuario",
+                            "diveId": "Id do buteco"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Entrada no buteco bem-sucedida"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/dives/exit_dive": {
+            "put": {
+                "summary": "Sai de um buteco",
+                "description": "Sai de um buteco específico",
+                "tags": [
+                    "dives"
+                ],
+                "parameters": [
+                    {
+                        "name": "exit",
+                        "in": "body",
+                        "required": true,
+                        "type": "object",
+                        "description": "Criar buteco",
+                        "example": {
+                            "userId": "Id do user",
+                            "new_owner": "Username do novo owner",
+                            "diveId": "Id do buteco"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Saída do buteco bem-sucedida"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/dives/list_dive_recipes/{dive_id}": {
+            "get": {
+                "summary": "Lista as receitas de um buteco",
+                "description": "Retorna uma lista das receitas associadas a um buteco específico",
+                "tags": [
+                    "dives"
+                ],
+                "parameters": [
+                    {
+                        "name": "dive_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de receitas de buteco retornada com sucesso"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/dives/list_dives/{user_id}": {
+            "get": {
+                "summary": "Lista os butecos de um usuário",
+                "description": "Retorna uma lista dos butecos associados a um usuário específico",
+                "tags": [
+                    "dives"
+                ],
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de butecos retornada com sucesso"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/dives/search_dive/{diveName}": {
+            "get": {
+                "summary": "Pesquisa um buteco por nome",
+                "description": "Pesquisa um buteco com base no nome fornecido",
+                "tags": [
+                    "dives"
+                ],
+                "parameters": [
+                    {
+                        "name": "diveName",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "buteco encontrado com sucesso"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/dives/update_dive": {
+            "put": {
+                "summary": "Atualiza um buteco",
+                "description": "Atualiza um buteco existente",
+                "tags": [
+                    "dives"
+                ],
+                "parameters": [
+                    {
+                        "name": "update",
+                        "in": "body",
+                        "required": true,
+                        "type": "object",
+                        "description": "Criar buteco",
+                        "example": {
+                            "id": "Id do buteco",
+                            "name": "Novo nome do buteco",
+                            "description": "Nova descrição do buteco",
+                            "fileId": "Id do novo arquivo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "buteco atualizado com sucesso"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
                     }
                 }
             }
