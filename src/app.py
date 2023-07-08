@@ -18,6 +18,13 @@ from utils.files.upload_local import upload_local
 
 from shared.infra.aws.S3 import s3
 
+from shared.infra.http.routes.barn_routes import barn_routes
+from shared.infra.http.routes.dive_routes import dives_routes
+from shared.infra.http.routes.ingredients_unit_routes import ingredients_unit_routes
+from shared.infra.http.routes.recipes_routes import recipes_routes
+from shared.infra.http.routes.search_routes import search_routes
+from shared.infra.http.routes.users_routes import users_routes
+
 load_dotenv('.env')
 
 app = Flask(__name__)
@@ -98,16 +105,15 @@ def create_post_ai():
     upload_option = os.getenv('UPLOAD_CONFIG_DEVELOPMENT')
     file_url = None
 
-    if upload_option == 'local':
-        file_url = upload_local(file=file, filename=filename,app=app)
-
-        print(file_url)
-    elif upload_option == 's3':
+    if upload_option == 's3':
         s3.upload(file, filename)
 
         file_url = s3.file_url(filename)
+
+        proxy_response = Proxy("PYRONAME:adapters.create_file_adapter").execute(name=filename,path=file_url)        
+
     else:
-        return jsonify({'error': 'Invalid upload option'}), 400
+        return jsonify({'error': 'Invalid upload option, need to S3 option'}), 400
 
     api_key = os.getenv('SPOONACULAR_API_KEY')
 
@@ -151,11 +157,31 @@ def create_post_ai():
 
     return jsonify({'description': recipe,
                     'category': category,
-                    'probability': probability}), 201
+                    'probability': probability,
+                    'data':proxy_response
+                }), 201
 
 @app.route('/')
 def index():
-    return jsonify({'ok': 'api is running! 🔥'}), 200
+    return jsonify({'ok': 'api is running! Time to cooking 🥘'}), 200
+
+# Register barn routes
+app.register_blueprint(barn_routes)
+
+# Register dives routes
+app.register_blueprint(dives_routes)
+
+# Register ingredients unit routes
+app.register_blueprint(ingredients_unit_routes)
+
+# Register recipes routes
+app.register_blueprint(recipes_routes)
+
+# Register search routes
+app.register_blueprint(search_routes)
+
+# Register users routes
+app.register_blueprint(users_routes)
 
 if __name__ == '__main__':
 
