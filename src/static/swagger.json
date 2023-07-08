@@ -13,6 +13,22 @@
         {
             "name": "dives",
             "description": "Endpoints relacionados a butecos"
+        },
+        {
+            "name": "barn",
+            "description": "Endpoints relacionados ao armazém"
+        },
+        {
+            "name" : "search",
+            "description": "Endpoints relacionados a busca"
+        },
+        {
+            "name" : "recipes",
+            "description": "Endpoints relacionados a receitas"
+        },
+        {
+            "name" : "users",
+            "description": "Endpoints relacionados a usuários"
         }
     ],
     "paths": {
@@ -108,7 +124,7 @@
                             "fileId": "Id do arquivo",
                             "userId": "Id do user"
                         }
-                    } 
+                    }
                 ],
                 "responses": {
                     "201": {
@@ -286,6 +302,295 @@
                         "description": "Erro interno do servidor"
                     }
                 }
+            }
+        },
+        "/barn/save": {
+            "post": {
+                "summary": "Salva uma receita no celeiro",
+                "description": "Salva uma receita específica no celeiro",
+                "tags": [
+                    "barn"
+                ],
+                "parameters": [
+                    {
+                        "name": "save",
+                        "in": "body",
+                        "required": true,
+                        "type": "object",
+                        "description": "Salvar receita no armazém",
+                        "example": {
+                            "barnId": "Id do armazem",
+                            "recipeId": "Id da receita"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Receita salva com sucesso"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/barn/{barnId}/remove/{recipeId}": {
+            "delete": {
+                "summary": "Remove uma receita do celeiro",
+                "description": "Remove uma receita específica do celeiro",
+                "tags": [
+                    "barn"
+                ],
+                "parameters": [
+                    {
+                        "name": "barnId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "recipeId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Receita removida com sucesso"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/barn/search": {
+            "get": {
+                "summary": "Pesquisa uma receita no celeiro",
+                "description": "Pesquisa uma receita no celeiro com base nos parâmetros fornecidos",
+                "tags": [
+                    "barn"
+                ],
+                "parameters": [
+                    {
+                        "name": "barn",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "recipe",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Receita encontrada com sucesso"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
+            }
+        },
+        "/search": {
+            "get": {
+              "summary": "Pesquisa butecos e usuários",
+              "description": "Pesquisa butecos e usuários com base nos parâmetros fornecidos",
+              "tags": [
+                "search"
+              ],
+              "parameters": [
+                {
+                  "name": "value",
+                  "in": "query",
+                  "required": false,
+                  "type": "string"
+                },
+                {
+                  "name": "user_id",
+                  "in": "query",
+                  "required": false,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Pesquisa realizada com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+        },
+        "/recipes": {
+            "post": {
+              "summary": "Cria uma receita",
+              "description": "Cria uma nova receita",
+              "tags": [
+                "recipes"
+              ],
+              "parameters": [
+                  {
+                    "name": "recipes",
+                    "in": "body",
+                    "required": false,
+                    "type": "object",
+                    "description": "Criar receita",
+                    "example": {
+                        "name": "Nome da receita",
+                        "description": "Descrição da receita",
+                        "ingredients": "Ingredientes da receita",
+                        "userId": "Id do user",
+                        "fileId": "Id do arquivo",
+                        "diveId": "Id do buteco"
+                    }
+                  }
+              ],
+              "responses": {
+                "201": {
+                  "description": "Receita criada com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            },
+            "get": {
+              "summary": "Lista as receitas",
+              "description": "Retorna uma lista das receitas",
+              "tags": [
+                "recipes"
+              ],
+              "responses": {
+                "201": {
+                  "description": "Lista de receitas retornada com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+          },
+          "/recipes/{id}/react": {
+            "put": {
+              "summary": "Reage a uma receita",
+              "description": "Reage a uma receita específica",
+              "tags": [
+                "recipes"
+              ],
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "type": "string"
+                },
+                {
+                    "name": "id",
+                    "in": "body",
+                    "required": true,
+                    "type": "object",
+                    "description": "Reagir à receita",
+                    "example": {
+                        "userId": "Id do usuário",
+                        "type": "Tipo da reação"
+                    }
+                }
+              ],
+              "responses": {
+                "201": {
+                  "description": "Reação à receita realizada com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+          },
+          "/recipes/search": {
+            "get": {
+              "summary": "Pesquisa uma receita",
+              "description": "Pesquisa uma receita com base nos parâmetros fornecidos",
+              "tags": [
+                "recipes"
+              ],
+              "parameters": [
+                {
+                  "name": "name",
+                  "in": "query",
+                  "required": false,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "201": {
+                  "description": "Receita encontrada com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+          },
+          "/recipes/openai/description": {
+            "get": {
+              "summary": "Gera uma descrição de receita usando OpenAI",
+              "description": "Gera uma descrição de receita usando o modelo de linguagem OpenAI",
+              "tags": [
+                "recipes"
+              ],
+              "parameters": [
+                {
+                  "name": "name",
+                  "in": "query",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Descrição da receita gerada com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+          },
+          "/recipes/openai/ingredients": {
+            "get": {
+              "summary": "Gera a lista de ingredientes de uma receita usando OpenAI",
+              "description": "Gera a lista de ingredientes de uma receita usando o modelo de linguagem OpenAI",
+              "tags": [
+                "recipes"
+              ],
+              "parameters": [
+                {
+                  "name": "name",
+                  "in": "query",
+                  "required": true,
+                  "type": "string"
+                },
+                {
+                  "name": "description",
+                  "in": "query",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Lista de ingredientes gerada com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
             }
         }
     }
