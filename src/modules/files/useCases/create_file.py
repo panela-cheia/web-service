@@ -15,9 +15,7 @@ class CreateFileUseCase:
         if extension != ".png" and extension != ".jpg":
             raise CustomError("Extension is not permitted!")
 
-        finalName = generate() +  "-" + createFileDTO.name
-
-        response = self.repository.create(name=finalName,path=createFileDTO.path)
+        response = self.repository.create(name=createFileDTO.name,path=createFileDTO.path)
 
         data = {
             "id": response.id,

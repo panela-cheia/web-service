@@ -20,6 +20,9 @@ class S3Client:
     
     def file_url(self,filename)-> str:
         return f'https://{self.s3_bucket}.s3.amazonaws.com/{filename}'
+    
+    def delete(self,filename):
+        self.s3_client.delete_object(Bucket=self.s3_bucket, Key=filename)
 
 
 s3 = S3Client()

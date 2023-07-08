@@ -38,6 +38,7 @@ from adapters.dive.update_dive_adapter import UpdateDiveAdapter
 
 from adapters.files.create_file_adapter import CreateFileAdapter
 from adapters.files.delete_file_adapter import DeleteFileAdapter
+from adapters.files.find_file_by_name_adapter import FindFileByNameAdapter
 
 from adapters.recipes.create_recipe_adapter import CreateRecipeAdapter
 from adapters.recipes.list_recipe_adapter import ListRecipeAdapter
@@ -81,6 +82,7 @@ if __name__ == "__main__":
         # FILES ADAPTERS
         CreateFileAdapter:"adapters.create_file_adapter",
         DeleteFileAdapter:"adapters.delete_file_adapter",
+        FindFileByNameAdapter:"adapters.find_file_by_name_adapter",
 
         # DIVE ADAPTERS
         CreateDiveAdapter:"adapters.create_dive_adapter",

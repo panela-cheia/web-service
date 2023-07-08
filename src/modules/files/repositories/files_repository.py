@@ -31,3 +31,9 @@ class FilesRepository:
         foundedFile = session.query(File).filter_by(id=id).first()
 
         return foundedFile
+    
+    def findByName(self, name):
+        session = self.orm.get_session()
+        foundedFile = session.query(File).filter_by(name=name).first()
+
+        return foundedFile
