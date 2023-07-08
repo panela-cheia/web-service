@@ -9,7 +9,7 @@ def save_recipe():
     recipeId = request.json["recipeId"]
     
     try:
-        user = Proxy("PYRONAME: adapters.save_recipe_adapter").execute(
+        user = Proxy("PYRONAME:adapters.save_recipe_adapter").execute(
             barnId = barnId,
             recipeId = recipeId
         )
@@ -19,13 +19,10 @@ def save_recipe():
     except Exception as e:
         return jsonify({"error": str(e)}), 500 
 
-@barn_routes.route('/barn/remove', methods=["PUT"])
-def remove_recipe():
-    barnId = request.json["barnId"]
-    recipeId = request.json["recipeId"]
-    
+@barn_routes.route('/barn/<barnId>/remove/<recipeId>', methods=["DELETE"])
+def remove_recipe(barnId, recipeId):
     try:
-        user = Proxy("PYRONAME: adapters.remove_recipe_adapter").execute(
+        user = Proxy("PYRONAME:adapters.remove_recipe_adapter").execute(
             barnId = barnId,
             recipeId = recipeId
         )
@@ -37,11 +34,11 @@ def remove_recipe():
     
 @barn_routes.route('/barn/search', methods=["GET"])
 def search_recipe():
-    barnId = request.json["barnId"]
-    recipeName = request.json["recipeId"]
+    barnId = request.args.get("barn")
+    recipeName = request.args.get("recipe")
     
     try:
-        user = Proxy("PYRONAME: adapters.search_recipe_barn_adapter").execute(
+        user = Proxy("PYRONAME:adapters.search_recipe_barn_adapter").execute(
             barnId = barnId,
             recipeName = recipeName
         )
