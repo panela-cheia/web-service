@@ -15,3 +15,4 @@ flask==2.3.2
 werkzeug==2.3.6
 boto3==1.26.163
 openai==0.27.8
+flask-swagger-ui==4.11.1
