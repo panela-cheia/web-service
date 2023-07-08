@@ -109,3 +109,54 @@ def listOthers(id):
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@users_routes.route('/users/search_barn', methods=["GET"])
+def search_in_users_barn():
+    user_id = request.args.get("user")
+    value = request.args.get("value")
+    
+    try:
+        search_user = Proxy("PYRONAME:adapters.search_in_users_barn_adapter").execute(
+            user_id=user_id,
+            value=value
+        )
+
+        return jsonify({'search_result': search_user}), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@users_routes.route('/users/search', methods=["GET"])
+def search():
+    user_id = request.args.get("user")
+    value = request.args.get("value")
+    
+    try:
+        search_user = Proxy("PYRONAME:adapters.search_users_adapter").execute(
+            user_id=user_id,
+            value=value
+        )
+
+        return jsonify({'search_result': search_user}), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@users_routes.route('/users/<id>/update_profile', methods=["PUT"])
+def update_user(id):
+    name = request.json["name"]
+    bio = request.json["bio"]
+    username = request.json["username"]
+    
+    try:
+        user = Proxy("PYRONAME:adapters.update_user_adapter").execute(
+            id=id,
+            name=name,
+            bio=bio,
+            username=username
+        )
+    
+        return jsonify({'user':user}), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

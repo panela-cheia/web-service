@@ -17,7 +17,7 @@ class SearchInUsersBarnAdapter(object):
 
     def execute(self,user_id:str,value:str):
         user = self.useCase.execute(user_id=user_id,value=value)
-    
+        
         logger.info("{topic} - {user}",topic=Topics.USER_LOGIN_EMAIL.value,user=json.dumps(user,indent=4,ensure_ascii=False))
 
         return user
