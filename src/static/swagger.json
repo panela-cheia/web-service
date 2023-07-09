@@ -592,6 +592,379 @@
                 }
               }
             }
+        },
+        "/users": {
+            "post": {
+              "summary": "Cria um usuário",
+              "description": "Cria um novo usuário",
+              "tags": [
+                "users"
+              ],
+              "parameters": [
+                {
+                    "name": "create",
+                    "in": "body",
+                    "required": true,
+                    "type": "object",
+                    "description": "Criar usuário",
+                    "example": {
+                        "name": "Nome do usuário",
+                        "username": "Username do usuário",
+                        "email": "E-mail do usuário",
+                        "password": "Senha do usuário"
+                    }
+                }
+              ],
+              "responses": {
+                "201": {
+                  "description": "Usuário criado com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+          },
+          "/users/login": {
+            "post": {
+              "summary": "Autentica um usuário",
+              "description": "Autentica um usuário com base no e-mail e senha fornecidos",
+              "tags": [
+                "users"
+              ],
+              "parameters": [
+                {
+                    "name": "login",
+                    "in": "body",
+                    "required": true,
+                    "type": "object",
+                    "description": "Criar usuário",
+                    "example": {
+                        "email": "E-mail do usuário",
+                        "password": "Senha do usuário"
+                    }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Usuário autenticado com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+          },
+          "/users/login-username": {
+            "post": {
+              "summary": "Autentica um usuário com o nome de usuário",
+              "description": "Autentica um usuário com base no nome de usuário e senha fornecidos",
+              "tags": [
+                "users"
+              ],
+              "parameters": [
+                {
+                    "name": "login",
+                    "in": "body",
+                    "required": true,
+                    "type": "object",
+                    "description": "Criar usuário",
+                    "example": {
+                        "username": "Username do usuário",
+                        "password": "Senha do usuário"
+                    }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Usuário autenticado com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+          },
+          "/users/follow": {
+            "post": {
+              "summary": "Segue um usuário",
+              "description": "Segue um usuário específico",
+              "tags": [
+                "users"
+              ],
+              "parameters": [
+                {
+                    "name": "login",
+                    "in": "body",
+                    "required": true,
+                    "type": "object",
+                    "description": "Criar usuário",
+                    "example": {
+                        "userId": "Id do usuário",
+                        "followId": "Id do usuário a ser seguido"
+                    }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Usuário seguido com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+          },
+          "/users/unfollow": {
+            "post": {
+              "summary": "Deixa de seguir um usuário",
+              "description": "Deixa de seguir um usuário específico",
+              "tags": [
+                "users"
+              ],
+              "parameters": [
+                {
+                    "name": "login",
+                    "in": "body",
+                    "required": true,
+                    "type": "object",
+                    "description": "Criar usuário",
+                    "example": {
+                        "userId": "Id do usuário",
+                        "unfollowId": "Id do usuário a ser seguido"
+                    }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Usuário deixou de seguir com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+          },
+          "/users/all": {
+            "get": {
+              "summary": "Lista todos os usuários",
+              "description": "Retorna uma lista de todos os usuários",
+              "tags": [
+                "users"
+              ],
+              "responses": {
+                "200": {
+                  "description": "Lista de usuários retornada com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+          },
+          "/users/{id}/others": {
+            "get": {
+              "summary": "Lista outros usuários",
+              "description": "Retorna uma lista de outros usuários em relação a um usuário específico",
+              "tags": [
+                "users"
+              ],
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Lista de outros usuários retornada com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+          },
+          "/users/search_barn": {
+            "get": {
+              "summary": "Pesquisa no armazém dos usuários",
+              "description": "Pesquisa no armazém dos usuários com base nos parâmetros fornecidos",
+              "tags": [
+                "users"
+              ],
+              "parameters": [
+                {
+                  "name": "user",
+                  "in": "query",
+                  "required": false,
+                  "type": "string"
+                },
+                {
+                  "name": "value",
+                  "in": "query",
+                  "required": false,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Resultado da pesquisa no celeiro dos usuários retornado com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+          },
+          "/users/search": {
+            "get": {
+              "summary": "Pesquisa usuários",
+              "description": "Pesquisa usuários com base nos parâmetros fornecidos",
+              "tags": [
+                "users"
+              ],
+              "parameters": [
+                {
+                  "name": "user",
+                  "in": "query",
+                  "required": false,
+                  "type": "string"
+                },
+                {
+                  "name": "value",
+                  "in": "query",
+                  "required": false,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Resultado da pesquisa de usuários retornado com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+          },
+          "/users/{id}/update_profile": {
+            "put": {
+              "summary": "Atualiza o perfil do usuário",
+              "description": "Atualiza o perfil do usuário com base nos parâmetros fornecidos",
+              "tags": [
+                "users"
+              ],
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "type": "string"
+                },
+                {
+                    "name": "data",
+                    "in": "body",
+                    "required": true,
+                    "type": "object",
+                    "description": "Atualizar dados do usuário",
+                    "example": {
+                        "name": "Nome do usuário",
+                        "bio": "Bio do usuário",
+                        "username": "Nome de usuário"
+                    }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Perfil do usuário atualizado com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+          },
+          "/users/user_profile/{user_id}": {
+            "get": {
+              "summary": "Obtém o perfil do usuário",
+              "description": "Obtém o perfil do usuário com base no ID fornecido",
+              "tags": [
+                "users"
+              ],
+              "parameters": [
+                {
+                  "name": "user_id",
+                  "in": "path",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Perfil do usuário retornado com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+          },
+          "/users/users_barn/{user_id}": {
+            "get": {
+              "summary": "Obtém o celeiro dos usuários",
+              "description": "Obtém o celeiro dos usuários com base no ID do usuário fornecido",
+              "tags": [
+                "users"
+              ],
+              "parameters": [
+                {
+                  "name": "user_id",
+                  "in": "path",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "Celeiro dos usuários retornado com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
+          },
+          "/users/update_photo_user": {
+            "put": {
+              "summary": "Atualiza a foto do usuário",
+              "description": "Atualiza a foto do usuário com base nos parâmetros fornecidos",
+              "tags": [
+                "users"
+              ],
+              "parameters": [
+                {
+                    "name": "update photo user",
+                    "in": "body",
+                    "required": true,
+                    "type": "object",
+                    "description": "Atualizar foto do usuário",
+                    "example": {
+                        "id": "Id do usuário",
+                        "photo": "Foto do usuário"
+                    }
+                }
+              ],
+              "responses": {
+                "201": {
+                  "description": "Foto do usuário atualizada com sucesso"
+                },
+                "500": {
+                  "description": "Erro interno do servidor"
+                }
+              }
+            }
         }
     }
 }

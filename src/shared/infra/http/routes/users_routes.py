@@ -160,3 +160,43 @@ def update_user(id):
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@users_routes.route('/users/user_profile/<user_id>', methods=["GET"])
+def user_profile(user_id):
+    try:
+        user = Proxy("PYRONAME:adapters.user_profile_adapter").execute(
+            user_id=user_id
+        )
+    
+        return jsonify({'user':user}), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@users_routes.route('/users/users_barn/<user_id>', methods=["GET"])
+def users_barn(user_id):
+    try:
+        users = Proxy("PYRONAME:adapters.users_barn_adapter").execute(
+            user_id=user_id
+        )
+    
+        return jsonify({'users':users}), 200
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@users_routes.route('/users/update_photo_user', methods=["PUT"])
+def update_photo_user():
+    user_id = request.json["id"]
+    photo = request.json["photo"]
+    
+    try:
+        user = Proxy("PYRONAME:adapters.update_photo_user_adapter").execute(
+            id=user_id,
+            photo=photo
+        )
+    
+        return jsonify({'user':user}), 201
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
