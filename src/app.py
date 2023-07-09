@@ -92,74 +92,57 @@ def delete_file(filename):
 
 # obs: lembrar sempre de usar o metodo com upload_option == 's3' 
 @app.route('/files/classifiers', methods=['POST'])
-def create_post_ai():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file provided'}), 400
+def classifier_post_ai():
+    try:
+        file_url = request.args.get("file_url")
 
-    file = request.files['file']
+        api_key = os.getenv('SPOONACULAR_API_KEY')
 
-    if file.filename == '':
-        return jsonify({'error': 'No file selected'}), 400
+        response = requests.get(
+            f'https://api.spoonacular.com/food/images/classify?apiKey={api_key}&imageUrl={file_url}',
+        )
 
-    filename = generate_random_filename(secure_filename(file.filename))
-    upload_option = os.getenv('UPLOAD_CONFIG_DEVELOPMENT')
-    file_url = None
+        data = json.loads(response.__dict__['_content'].decode('utf-8'))
+        print(data)
 
-    if upload_option == 's3':
-        s3.upload(file, filename)
+        # Acessar os campos desejados
+        category = data['category']
+        probability = data['probability']
 
-        file_url = s3.file_url(filename)
+        data_response = {
+            category,
+            probability
+        }
 
-        proxy_response = Proxy("PYRONAME:adapters.create_file_adapter").execute(name=filename,path=file_url)        
+        prompt = "Com base nos dados fornecidos pela API do spoonacular,"
+        prompt += "Informe qual é a possível receita do usuário,Informe em portugues o nome da receita (traduza o nome se vindo de outra lingua) e em qual categoria se enquadra"
+        prompt += f"Os dados são: {data_response}"
 
-    else:
-        return jsonify({'error': 'Invalid upload option, need to S3 option'}), 400
+        # Parâmetros para a chamada da API do ChatGPT
+        params = {
+            'engine': 'text-davinci-003',
+            'prompt': prompt,
+            'max_tokens': 1000,  # Defina o número máximo de tokens na resposta
+            # Controla a aleatoriedade das respostas (0.2 é mais determinístico, 0.8 é mais criativo)
+            'temperature': 0.1,
+            'n': 1,  # Gere apenas uma resposta
+            'stop': None  # Não defina uma palavra de parada para a resposta
+        }
 
-    api_key = os.getenv('SPOONACULAR_API_KEY')
+        openai.api_key = os.getenv('OPENAI_KEY')
+        # Fazendo a chamada para a API do ChatGPT
+        response_open_api = openai.Completion.create(**params)
 
-    response = requests.get(
-        f'https://api.spoonacular.com/food/images/classify?apiKey={api_key}&imageUrl={file_url}',
-    )
+        # Obtendo a descrição gerada
+        recipe = response_open_api.choices[0].text.strip()
 
-    data = json.loads(response.__dict__['_content'].decode('utf-8'))
-    print(data)
+        return jsonify({'description': recipe,
+                        'category': category,
+                        'probability': probability
+                    }), 201
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 500
 
-    # Acessar os campos desejados
-    category = data['category']
-    probability = data['probability']
-
-    data_response = {
-        category,
-        probability
-    }
-
-    prompt = "Com base nos dados fornecidos pela API do spoonacular,"
-    prompt += "Informe qual é a possível receita do usuário,Informe em portugues o nome da receita (traduza o nome se vindo de outra lingua) e em qual categoria se enquadra"
-    prompt += f"Os dados são: {data_response}"
-
-    # Parâmetros para a chamada da API do ChatGPT
-    params = {
-        'engine': 'text-davinci-003',
-        'prompt': prompt,
-        'max_tokens': 1000,  # Defina o número máximo de tokens na resposta
-        # Controla a aleatoriedade das respostas (0.2 é mais determinístico, 0.8 é mais criativo)
-        'temperature': 0.1,
-        'n': 1,  # Gere apenas uma resposta
-        'stop': None  # Não defina uma palavra de parada para a resposta
-    }
-
-    openai.api_key = os.getenv('OPENAI_KEY')
-    # Fazendo a chamada para a API do ChatGPT
-    response_open_api = openai.Completion.create(**params)
-
-    # Obtendo a descrição gerada
-    recipe = response_open_api.choices[0].text.strip()
-
-    return jsonify({'description': recipe,
-                    'category': category,
-                    'probability': probability,
-                    'data':proxy_response
-                }), 201
 
 @app.route('/files/list', methods=['GET'])
 def list_files_in_bucket():
