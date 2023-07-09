@@ -1,970 +1,1169 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "title": "Panela cheia API",
-        "description": " 🥘 Seu livro de receitas onde você estiver",
-        "version": "1.0"
-    },
-    "tags": [
-        {
-            "name": "ingredients_unity",
-            "description": "Endpoints relacionados a tipos de ingredientes"
-        },
-        {
-            "name": "dives",
-            "description": "Endpoints relacionados a butecos"
-        },
-        {
-            "name": "barn",
-            "description": "Endpoints relacionados ao armazém"
-        },
-        {
-            "name" : "search",
-            "description": "Endpoints relacionados a busca"
-        },
-        {
-            "name" : "recipes",
-            "description": "Endpoints relacionados a receitas"
-        },
-        {
-            "name" : "users",
-            "description": "Endpoints relacionados a usuários"
-        }
-    ],
-    "paths": {
-        "/ingredients-unit": {
-            "post": {
-                "summary": "Cria uma unidade de ingrediente",
-                "description": "Cria uma nova unidade de ingrediente",
-                "parameters": [
-                    {
-                        "name": "name",
-                        "in": "body",
-                        "required": true,
-                        "type": "text",
-                        "description": "Nome da unidade de ingrediente",
-                        "example": {
-                            "name": "Kg"
-                        }
-                    }
-                ],
-                "tags": [
-                    "ingredients_unity"
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Unidade de ingrediente criada com sucesso"
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor"
-                    }
-                }
-            }
-        },
-        "/delete_ingredients/{ingredients_unit_id}": {
-            "delete": {
-                "summary": "Exclui uma unidade de ingrediente",
-                "description": "Exclui uma unidade de ingrediente com base no ID fornecido",
-                "parameters": [
-                    {
-                        "name": "ingredients_unit_id",
-                        "in": "path",
-                        "required": true,
-                        "type": "string",
-                        "description": "ID da unidade de ingrediente como parâmetro de rota"
-                    }
-                ],
-                "tags": [
-                    "ingredients_unity"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Unidade de ingrediente excluída com sucesso"
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor"
-                    }
-                }
-            }
-        },
-        "/list_ingredients_unit": {
-            "get": {
-                "summary": "Lista as unidades de ingredientes",
-                "description": "Retorna uma lista das unidades de ingredientes",
-                "tags": [
-                    "ingredients_unity"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Lista de unidades de ingredientes retornada com sucesso"
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor"
-                    }
-                }
-            }
-        },
-        "/dives": {
-            "post": {
-                "summary": "Cria um buteco",
-                "description": "Cria um novo buteco",
-                "tags": [
-                    "dives"
-                ],
-                "parameters": [
-                    {
-                        "name": "create",
-                        "in": "body",
-                        "required": true,
-                        "type": "text",
-                        "description": "Criar buteco",
-                        "example": {
-                            "name": "Buteco do Zé",
-                            "description": "Descrição do buteco",
-                            "fileId": "Id do arquivo",
-                            "userId": "Id do user"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "buteco criado com sucesso"
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor"
-                    }
-                }
-            }
-        },
-        "/dives/enter_dive": {
-            "post": {
-                "summary": "Entra em um buteco",
-                "description": "Entra em um buteco específico",
-                "tags": [
-                    "dives"
-                ],
-                "parameters": [
-                    {
-                        "name": "enter",
-                        "in": "body",
-                        "required": true,
-                        "type": "object",
-                        "description": "Criar buteco",
-                        "example": {
-                            "userId": "Id do usuario",
-                            "diveId": "Id do buteco"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Entrada no buteco bem-sucedida"
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor"
-                    }
-                }
-            }
-        },
-        "/dives/exit_dive": {
-            "put": {
-                "summary": "Sai de um buteco",
-                "description": "Sai de um buteco específico",
-                "tags": [
-                    "dives"
-                ],
-                "parameters": [
-                    {
-                        "name": "exit",
-                        "in": "body",
-                        "required": true,
-                        "type": "object",
-                        "description": "Criar buteco",
-                        "example": {
-                            "userId": "Id do user",
-                            "new_owner": "Username do novo owner",
-                            "diveId": "Id do buteco"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Saída do buteco bem-sucedida"
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor"
-                    }
-                }
-            }
-        },
-        "/dives/list_dive_recipes/{dive_id}": {
-            "get": {
-                "summary": "Lista as receitas de um buteco",
-                "description": "Retorna uma lista das receitas associadas a um buteco específico",
-                "tags": [
-                    "dives"
-                ],
-                "parameters": [
-                    {
-                        "name": "dive_id",
-                        "in": "path",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Lista de receitas de buteco retornada com sucesso"
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor"
-                    }
-                }
-            }
-        },
-        "/dives/list_dives/{user_id}": {
-            "get": {
-                "summary": "Lista os butecos de um usuário",
-                "description": "Retorna uma lista dos butecos associados a um usuário específico",
-                "tags": [
-                    "dives"
-                ],
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "path",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Lista de butecos retornada com sucesso"
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor"
-                    }
-                }
-            }
-        },
-        "/dives/search_dive/{diveName}": {
-            "get": {
-                "summary": "Pesquisa um buteco por nome",
-                "description": "Pesquisa um buteco com base no nome fornecido",
-                "tags": [
-                    "dives"
-                ],
-                "parameters": [
-                    {
-                        "name": "diveName",
-                        "in": "path",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "buteco encontrado com sucesso"
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor"
-                    }
-                }
-            }
-        },
-        "/dives/update_dive": {
-            "put": {
-                "summary": "Atualiza um buteco",
-                "description": "Atualiza um buteco existente",
-                "tags": [
-                    "dives"
-                ],
-                "parameters": [
-                    {
-                        "name": "update",
-                        "in": "body",
-                        "required": true,
-                        "type": "object",
-                        "description": "Criar buteco",
-                        "example": {
-                            "id": "Id do buteco",
-                            "name": "Novo nome do buteco",
-                            "description": "Nova descrição do buteco",
-                            "fileId": "Id do novo arquivo"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "buteco atualizado com sucesso"
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor"
-                    }
-                }
-            }
-        },
-        "/barn/save": {
-            "post": {
-                "summary": "Salva uma receita no celeiro",
-                "description": "Salva uma receita específica no celeiro",
-                "tags": [
-                    "barn"
-                ],
-                "parameters": [
-                    {
-                        "name": "save",
-                        "in": "body",
-                        "required": true,
-                        "type": "object",
-                        "description": "Salvar receita no armazém",
-                        "example": {
-                            "barnId": "Id do armazem",
-                            "recipeId": "Id da receita"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Receita salva com sucesso"
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor"
-                    }
-                }
-            }
-        },
-        "/barn/{barnId}/remove/{recipeId}": {
-            "delete": {
-                "summary": "Remove uma receita do celeiro",
-                "description": "Remove uma receita específica do celeiro",
-                "tags": [
-                    "barn"
-                ],
-                "parameters": [
-                    {
-                        "name": "barnId",
-                        "in": "path",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "recipeId",
-                        "in": "path",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Receita removida com sucesso"
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor"
-                    }
-                }
-            }
-        },
-        "/barn/search": {
-            "get": {
-                "summary": "Pesquisa uma receita no celeiro",
-                "description": "Pesquisa uma receita no celeiro com base nos parâmetros fornecidos",
-                "tags": [
-                    "barn"
-                ],
-                "parameters": [
-                    {
-                        "name": "barn",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "recipe",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Receita encontrada com sucesso"
-                    },
-                    "500": {
-                        "description": "Erro interno do servidor"
-                    }
-                }
-            }
-        },
-        "/search": {
-            "get": {
-              "summary": "Pesquisa butecos e usuários",
-              "description": "Pesquisa butecos e usuários com base nos parâmetros fornecidos",
-              "tags": [
-                "search"
-              ],
+  "swagger": "2.0",
+  "info": {
+      "title": "Panela cheia API",
+      "description": " 🥘 Seu livro de receitas onde você estiver",
+      "version": "1.0"
+  },
+  "tags": [
+      {
+          "name": "ingredients_unity",
+          "description": "Endpoints relacionados a tipos de ingredientes"
+      },
+      {
+          "name": "dives",
+          "description": "Endpoints relacionados a butecos"
+      },
+      {
+          "name": "barn",
+          "description": "Endpoints relacionados ao armazém"
+      },
+      {
+          "name": "search",
+          "description": "Endpoints relacionados a busca"
+      },
+      {
+          "name": "recipes",
+          "description": "Endpoints relacionados a receitas"
+      },
+      {
+          "name": "users",
+          "description": "Endpoints relacionados a usuários"
+      },
+      {
+          "name": "files",
+          "description": "Endpoints relacionados aos files"
+      }
+  ],
+  "paths": {
+      "/ingredients-unit": {
+          "post": {
+              "summary": "Cria uma unidade de ingrediente",
+              "description": "Cria uma nova unidade de ingrediente",
               "parameters": [
-                {
-                  "name": "value",
-                  "in": "query",
-                  "required": false,
-                  "type": "string"
-                },
-                {
-                  "name": "user_id",
-                  "in": "query",
-                  "required": false,
-                  "type": "string"
-                }
+                  {
+                      "name": "name",
+                      "in": "body",
+                      "required": true,
+                      "type": "text",
+                      "description": "Nome da unidade de ingrediente",
+                      "example": {
+                          "name": "Kg"
+                      }
+                  }
+              ],
+              "tags": [
+                  "ingredients_unity"
               ],
               "responses": {
-                "200": {
-                  "description": "Pesquisa realizada com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "201": {
+                      "description": "Unidade de ingrediente criada com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-        },
-        "/recipes": {
-            "post": {
-              "summary": "Cria uma receita",
-              "description": "Cria uma nova receita",
+          }
+      },
+      "/delete_ingredients/{ingredients_unit_id}": {
+          "delete": {
+              "summary": "Exclui uma unidade de ingrediente",
+              "description": "Exclui uma unidade de ingrediente com base no ID fornecido",
+              "parameters": [
+                  {
+                      "name": "ingredients_unit_id",
+                      "in": "path",
+                      "required": true,
+                      "type": "string",
+                      "description": "ID da unidade de ingrediente como parâmetro de rota"
+                  }
+              ],
               "tags": [
-                "recipes"
+                  "ingredients_unity"
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Unidade de ingrediente excluída com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
+              }
+          }
+      },
+      "/list_ingredients_unit": {
+          "get": {
+              "summary": "Lista as unidades de ingredientes",
+              "description": "Retorna uma lista das unidades de ingredientes",
+              "tags": [
+                  "ingredients_unity"
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Lista de unidades de ingredientes retornada com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
+              }
+          }
+      },
+      "/dives": {
+          "post": {
+              "summary": "Cria um buteco",
+              "description": "Cria um novo buteco",
+              "tags": [
+                  "dives"
               ],
               "parameters": [
                   {
-                    "name": "recipes",
-                    "in": "body",
-                    "required": false,
-                    "type": "object",
-                    "description": "Criar receita",
-                    "example": {
-                        "name": "Nome da receita",
-                        "description": "Descrição da receita",
-                        "ingredients": "Ingredientes da receita",
-                        "userId": "Id do user",
-                        "fileId": "Id do arquivo",
-                        "diveId": "Id do buteco"
-                    }
+                      "name": "create",
+                      "in": "body",
+                      "required": true,
+                      "type": "text",
+                      "description": "Criar buteco",
+                      "example": {
+                          "name": "Buteco do Zé",
+                          "description": "Descrição do buteco",
+                          "fileId": "Id do arquivo",
+                          "userId": "Id do user"
+                      }
                   }
               ],
               "responses": {
-                "201": {
-                  "description": "Receita criada com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "201": {
+                      "description": "buteco criado com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            },
-            "get": {
+          }
+      },
+      "/dives/enter_dive": {
+          "post": {
+              "summary": "Entra em um buteco",
+              "description": "Entra em um buteco específico",
+              "tags": [
+                  "dives"
+              ],
+              "parameters": [
+                  {
+                      "name": "enter",
+                      "in": "body",
+                      "required": true,
+                      "type": "object",
+                      "description": "Criar buteco",
+                      "example": {
+                          "userId": "Id do usuario",
+                          "diveId": "Id do buteco"
+                      }
+                  }
+              ],
+              "responses": {
+                  "201": {
+                      "description": "Entrada no buteco bem-sucedida"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
+              }
+          }
+      },
+      "/dives/exit_dive": {
+          "put": {
+              "summary": "Sai de um buteco",
+              "description": "Sai de um buteco específico",
+              "tags": [
+                  "dives"
+              ],
+              "parameters": [
+                  {
+                      "name": "exit",
+                      "in": "body",
+                      "required": true,
+                      "type": "object",
+                      "description": "Criar buteco",
+                      "example": {
+                          "userId": "Id do user",
+                          "new_owner": "Username do novo owner",
+                          "diveId": "Id do buteco"
+                      }
+                  }
+              ],
+              "responses": {
+                  "201": {
+                      "description": "Saída do buteco bem-sucedida"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
+              }
+          }
+      },
+      "/dives/list_dive_recipes/{dive_id}": {
+          "get": {
+              "summary": "Lista as receitas de um buteco",
+              "description": "Retorna uma lista das receitas associadas a um buteco específico",
+              "tags": [
+                  "dives"
+              ],
+              "parameters": [
+                  {
+                      "name": "dive_id",
+                      "in": "path",
+                      "required": true,
+                      "type": "string"
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Lista de receitas de buteco retornada com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
+              }
+          }
+      },
+      "/dives/list_dives/{user_id}": {
+          "get": {
+              "summary": "Lista os butecos de um usuário",
+              "description": "Retorna uma lista dos butecos associados a um usuário específico",
+              "tags": [
+                  "dives"
+              ],
+              "parameters": [
+                  {
+                      "name": "user_id",
+                      "in": "path",
+                      "required": true,
+                      "type": "string"
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Lista de butecos retornada com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
+              }
+          }
+      },
+      "/dives/search_dive/{diveName}": {
+          "get": {
+              "summary": "Pesquisa um buteco por nome",
+              "description": "Pesquisa um buteco com base no nome fornecido",
+              "tags": [
+                  "dives"
+              ],
+              "parameters": [
+                  {
+                      "name": "diveName",
+                      "in": "path",
+                      "required": true,
+                      "type": "string"
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "buteco encontrado com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
+              }
+          }
+      },
+      "/dives/update_dive": {
+          "put": {
+              "summary": "Atualiza um buteco",
+              "description": "Atualiza um buteco existente",
+              "tags": [
+                  "dives"
+              ],
+              "parameters": [
+                  {
+                      "name": "update",
+                      "in": "body",
+                      "required": true,
+                      "type": "object",
+                      "description": "Criar buteco",
+                      "example": {
+                          "id": "Id do buteco",
+                          "name": "Novo nome do buteco",
+                          "description": "Nova descrição do buteco",
+                          "fileId": "Id do novo arquivo"
+                      }
+                  }
+              ],
+              "responses": {
+                  "201": {
+                      "description": "buteco atualizado com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
+              }
+          }
+      },
+      "/barn/save": {
+          "post": {
+              "summary": "Salva uma receita no celeiro",
+              "description": "Salva uma receita específica no celeiro",
+              "tags": [
+                  "barn"
+              ],
+              "parameters": [
+                  {
+                      "name": "save",
+                      "in": "body",
+                      "required": true,
+                      "type": "object",
+                      "description": "Salvar receita no armazém",
+                      "example": {
+                          "barnId": "Id do armazem",
+                          "recipeId": "Id da receita"
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Receita salva com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
+              }
+          }
+      },
+      "/barn/{barnId}/remove/{recipeId}": {
+          "delete": {
+              "summary": "Remove uma receita do celeiro",
+              "description": "Remove uma receita específica do celeiro",
+              "tags": [
+                  "barn"
+              ],
+              "parameters": [
+                  {
+                      "name": "barnId",
+                      "in": "path",
+                      "required": true,
+                      "type": "string"
+                  },
+                  {
+                      "name": "recipeId",
+                      "in": "path",
+                      "required": true,
+                      "type": "string"
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Receita removida com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
+              }
+          }
+      },
+      "/barn/search": {
+          "get": {
+              "summary": "Pesquisa uma receita no celeiro",
+              "description": "Pesquisa uma receita no celeiro com base nos parâmetros fornecidos",
+              "tags": [
+                  "barn"
+              ],
+              "parameters": [
+                  {
+                      "name": "barn",
+                      "in": "query",
+                      "required": false,
+                      "type": "string"
+                  },
+                  {
+                      "name": "recipe",
+                      "in": "query",
+                      "required": false,
+                      "type": "string"
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Receita encontrada com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
+              }
+          }
+      },
+      "/search": {
+          "get": {
+              "summary": "Pesquisa butecos e usuários",
+              "description": "Pesquisa butecos e usuários com base nos parâmetros fornecidos",
+              "tags": [
+                  "search"
+              ],
+              "parameters": [
+                  {
+                      "name": "value",
+                      "in": "query",
+                      "required": false,
+                      "type": "string"
+                  },
+                  {
+                      "name": "user_id",
+                      "in": "query",
+                      "required": false,
+                      "type": "string"
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Pesquisa realizada com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
+              }
+          }
+      },
+      "/recipes": {
+          "post": {
+              "summary": "Cria uma receita",
+              "description": "Cria uma nova receita",
+              "tags": [
+                  "recipes"
+              ],
+              "parameters": [
+                  {
+                      "name": "recipes",
+                      "in": "body",
+                      "required": false,
+                      "type": "object",
+                      "description": "Criar receita",
+                      "example": {
+                          "name": "Nome da receita",
+                          "description": "Descrição da receita",
+                          "ingredients": "Ingredientes da receita",
+                          "userId": "Id do user",
+                          "fileId": "Id do arquivo",
+                          "diveId": "Id do buteco"
+                      }
+                  }
+              ],
+              "responses": {
+                  "201": {
+                      "description": "Receita criada com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
+              }
+          },
+          "get": {
               "summary": "Lista as receitas",
               "description": "Retorna uma lista das receitas",
               "tags": [
-                "recipes"
+                  "recipes"
               ],
               "responses": {
-                "201": {
-                  "description": "Lista de receitas retornada com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "201": {
+                      "description": "Lista de receitas retornada com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-          },
-          "/recipes/{id}/react": {
-            "put": {
+          }
+      },
+      "/recipes/{id}/react": {
+          "put": {
               "summary": "Reage a uma receita",
               "description": "Reage a uma receita específica",
               "tags": [
-                "recipes"
+                  "recipes"
               ],
               "parameters": [
-                {
-                  "name": "id",
-                  "in": "path",
-                  "required": true,
-                  "type": "string"
-                },
-                {
-                    "name": "id",
-                    "in": "body",
-                    "required": true,
-                    "type": "object",
-                    "description": "Reagir à receita",
-                    "example": {
-                        "userId": "Id do usuário",
-                        "type": "Tipo da reação"
-                    }
-                }
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "required": true,
+                      "type": "string"
+                  },
+                  {
+                      "name": "id",
+                      "in": "body",
+                      "required": true,
+                      "type": "object",
+                      "description": "Reagir à receita",
+                      "example": {
+                          "userId": "Id do usuário",
+                          "type": "Tipo da reação"
+                      }
+                  }
               ],
               "responses": {
-                "201": {
-                  "description": "Reação à receita realizada com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "201": {
+                      "description": "Reação à receita realizada com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-          },
-          "/recipes/search": {
-            "get": {
+          }
+      },
+      "/recipes/search": {
+          "get": {
               "summary": "Pesquisa uma receita",
               "description": "Pesquisa uma receita com base nos parâmetros fornecidos",
               "tags": [
-                "recipes"
+                  "recipes"
               ],
               "parameters": [
-                {
-                  "name": "name",
-                  "in": "query",
-                  "required": false,
-                  "type": "string"
-                }
+                  {
+                      "name": "name",
+                      "in": "query",
+                      "required": false,
+                      "type": "string"
+                  }
               ],
               "responses": {
-                "201": {
-                  "description": "Receita encontrada com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "201": {
+                      "description": "Receita encontrada com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-          },
-          "/recipes/openai/description": {
-            "get": {
+          }
+      },
+      "/recipes/openai/description": {
+          "get": {
               "summary": "Gera uma descrição de receita usando OpenAI",
               "description": "Gera uma descrição de receita usando o modelo de linguagem OpenAI",
               "tags": [
-                "recipes"
+                  "recipes"
               ],
               "parameters": [
-                {
-                  "name": "name",
-                  "in": "query",
-                  "required": true,
-                  "type": "string"
-                }
+                  {
+                      "name": "name",
+                      "in": "query",
+                      "required": true,
+                      "type": "string"
+                  }
               ],
               "responses": {
-                "200": {
-                  "description": "Descrição da receita gerada com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "200": {
+                      "description": "Descrição da receita gerada com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-          },
-          "/recipes/openai/ingredients": {
-            "get": {
+          }
+      },
+      "/recipes/openai/ingredients": {
+          "get": {
               "summary": "Gera a lista de ingredientes de uma receita usando OpenAI",
               "description": "Gera a lista de ingredientes de uma receita usando o modelo de linguagem OpenAI",
               "tags": [
-                "recipes"
+                  "recipes"
               ],
               "parameters": [
-                {
-                  "name": "name",
-                  "in": "query",
-                  "required": true,
-                  "type": "string"
-                },
-                {
-                  "name": "description",
-                  "in": "query",
-                  "required": true,
-                  "type": "string"
-                }
+                  {
+                      "name": "name",
+                      "in": "query",
+                      "required": true,
+                      "type": "string"
+                  },
+                  {
+                      "name": "description",
+                      "in": "query",
+                      "required": true,
+                      "type": "string"
+                  }
               ],
               "responses": {
-                "200": {
-                  "description": "Lista de ingredientes gerada com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "200": {
+                      "description": "Lista de ingredientes gerada com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-        },
-        "/users": {
-            "post": {
+          }
+      },
+      "/users": {
+          "post": {
               "summary": "Cria um usuário",
               "description": "Cria um novo usuário",
               "tags": [
-                "users"
+                  "users"
               ],
               "parameters": [
-                {
-                    "name": "create",
-                    "in": "body",
-                    "required": true,
-                    "type": "object",
-                    "description": "Criar usuário",
-                    "example": {
-                        "name": "Nome do usuário",
-                        "username": "Username do usuário",
-                        "email": "E-mail do usuário",
-                        "password": "Senha do usuário"
-                    }
-                }
+                  {
+                      "name": "create",
+                      "in": "body",
+                      "required": true,
+                      "type": "object",
+                      "description": "Criar usuário",
+                      "example": {
+                          "name": "Nome do usuário",
+                          "username": "Username do usuário",
+                          "email": "E-mail do usuário",
+                          "password": "Senha do usuário"
+                      }
+                  }
               ],
               "responses": {
-                "201": {
-                  "description": "Usuário criado com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "201": {
+                      "description": "Usuário criado com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-          },
-          "/users/login": {
-            "post": {
+          }
+      },
+      "/users/login": {
+          "post": {
               "summary": "Autentica um usuário",
               "description": "Autentica um usuário com base no e-mail e senha fornecidos",
               "tags": [
-                "users"
+                  "users"
               ],
               "parameters": [
-                {
-                    "name": "login",
-                    "in": "body",
-                    "required": true,
-                    "type": "object",
-                    "description": "Criar usuário",
-                    "example": {
-                        "email": "E-mail do usuário",
-                        "password": "Senha do usuário"
-                    }
-                }
+                  {
+                      "name": "login",
+                      "in": "body",
+                      "required": true,
+                      "type": "object",
+                      "description": "Criar usuário",
+                      "example": {
+                          "email": "E-mail do usuário",
+                          "password": "Senha do usuário"
+                      }
+                  }
               ],
               "responses": {
-                "200": {
-                  "description": "Usuário autenticado com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "200": {
+                      "description": "Usuário autenticado com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-          },
-          "/users/login-username": {
-            "post": {
+          }
+      },
+      "/users/login-username": {
+          "post": {
               "summary": "Autentica um usuário com o nome de usuário",
               "description": "Autentica um usuário com base no nome de usuário e senha fornecidos",
               "tags": [
-                "users"
+                  "users"
               ],
               "parameters": [
-                {
-                    "name": "login",
-                    "in": "body",
-                    "required": true,
-                    "type": "object",
-                    "description": "Criar usuário",
-                    "example": {
-                        "username": "Username do usuário",
-                        "password": "Senha do usuário"
-                    }
-                }
+                  {
+                      "name": "login",
+                      "in": "body",
+                      "required": true,
+                      "type": "object",
+                      "description": "Criar usuário",
+                      "example": {
+                          "username": "Username do usuário",
+                          "password": "Senha do usuário"
+                      }
+                  }
               ],
               "responses": {
-                "200": {
-                  "description": "Usuário autenticado com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "200": {
+                      "description": "Usuário autenticado com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-          },
-          "/users/follow": {
-            "post": {
+          }
+      },
+      "/users/follow": {
+          "post": {
               "summary": "Segue um usuário",
               "description": "Segue um usuário específico",
               "tags": [
-                "users"
+                  "users"
               ],
               "parameters": [
-                {
-                    "name": "login",
-                    "in": "body",
-                    "required": true,
-                    "type": "object",
-                    "description": "Criar usuário",
-                    "example": {
-                        "userId": "Id do usuário",
-                        "followId": "Id do usuário a ser seguido"
-                    }
-                }
+                  {
+                      "name": "login",
+                      "in": "body",
+                      "required": true,
+                      "type": "object",
+                      "description": "Criar usuário",
+                      "example": {
+                          "userId": "Id do usuário",
+                          "followId": "Id do usuário a ser seguido"
+                      }
+                  }
               ],
               "responses": {
-                "200": {
-                  "description": "Usuário seguido com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "200": {
+                      "description": "Usuário seguido com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-          },
-          "/users/unfollow": {
-            "post": {
+          }
+      },
+      "/users/unfollow": {
+          "post": {
               "summary": "Deixa de seguir um usuário",
               "description": "Deixa de seguir um usuário específico",
               "tags": [
-                "users"
+                  "users"
               ],
               "parameters": [
-                {
-                    "name": "login",
-                    "in": "body",
-                    "required": true,
-                    "type": "object",
-                    "description": "Criar usuário",
-                    "example": {
-                        "userId": "Id do usuário",
-                        "unfollowId": "Id do usuário a ser seguido"
-                    }
-                }
+                  {
+                      "name": "login",
+                      "in": "body",
+                      "required": true,
+                      "type": "object",
+                      "description": "Criar usuário",
+                      "example": {
+                          "userId": "Id do usuário",
+                          "unfollowId": "Id do usuário a ser seguido"
+                      }
+                  }
               ],
               "responses": {
-                "200": {
-                  "description": "Usuário deixou de seguir com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "200": {
+                      "description": "Usuário deixou de seguir com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-          },
-          "/users/all": {
-            "get": {
+          }
+      },
+      "/users/all": {
+          "get": {
               "summary": "Lista todos os usuários",
               "description": "Retorna uma lista de todos os usuários",
               "tags": [
-                "users"
+                  "users"
               ],
               "responses": {
-                "200": {
-                  "description": "Lista de usuários retornada com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "200": {
+                      "description": "Lista de usuários retornada com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-          },
-          "/users/{id}/others": {
-            "get": {
+          }
+      },
+      "/users/{id}/others": {
+          "get": {
               "summary": "Lista outros usuários",
               "description": "Retorna uma lista de outros usuários em relação a um usuário específico",
               "tags": [
-                "users"
+                  "users"
               ],
               "parameters": [
-                {
-                  "name": "id",
-                  "in": "path",
-                  "required": true,
-                  "type": "string"
-                }
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "required": true,
+                      "type": "string"
+                  }
               ],
               "responses": {
-                "200": {
-                  "description": "Lista de outros usuários retornada com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "200": {
+                      "description": "Lista de outros usuários retornada com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-          },
-          "/users/search_barn": {
-            "get": {
+          }
+      },
+      "/users/search_barn": {
+          "get": {
               "summary": "Pesquisa no armazém dos usuários",
               "description": "Pesquisa no armazém dos usuários com base nos parâmetros fornecidos",
               "tags": [
-                "users"
+                  "users"
               ],
               "parameters": [
-                {
-                  "name": "user",
-                  "in": "query",
-                  "required": false,
-                  "type": "string"
-                },
-                {
-                  "name": "value",
-                  "in": "query",
-                  "required": false,
-                  "type": "string"
-                }
+                  {
+                      "name": "user",
+                      "in": "query",
+                      "required": false,
+                      "type": "string"
+                  },
+                  {
+                      "name": "value",
+                      "in": "query",
+                      "required": false,
+                      "type": "string"
+                  }
               ],
               "responses": {
-                "200": {
-                  "description": "Resultado da pesquisa no celeiro dos usuários retornado com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "200": {
+                      "description": "Resultado da pesquisa no celeiro dos usuários retornado com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-          },
-          "/users/search": {
-            "get": {
+          }
+      },
+      "/users/search": {
+          "get": {
               "summary": "Pesquisa usuários",
               "description": "Pesquisa usuários com base nos parâmetros fornecidos",
               "tags": [
-                "users"
+                  "users"
               ],
               "parameters": [
-                {
-                  "name": "user",
-                  "in": "query",
-                  "required": false,
-                  "type": "string"
-                },
-                {
-                  "name": "value",
-                  "in": "query",
-                  "required": false,
-                  "type": "string"
-                }
+                  {
+                      "name": "user",
+                      "in": "query",
+                      "required": false,
+                      "type": "string"
+                  },
+                  {
+                      "name": "value",
+                      "in": "query",
+                      "required": false,
+                      "type": "string"
+                  }
               ],
               "responses": {
-                "200": {
-                  "description": "Resultado da pesquisa de usuários retornado com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "200": {
+                      "description": "Resultado da pesquisa de usuários retornado com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-          },
-          "/users/{id}/update_profile": {
-            "put": {
+          }
+      },
+      "/users/{id}/update_profile": {
+          "put": {
               "summary": "Atualiza o perfil do usuário",
               "description": "Atualiza o perfil do usuário com base nos parâmetros fornecidos",
               "tags": [
-                "users"
+                  "users"
               ],
               "parameters": [
-                {
-                  "name": "id",
-                  "in": "path",
-                  "required": true,
-                  "type": "string"
-                },
-                {
-                    "name": "data",
-                    "in": "body",
-                    "required": true,
-                    "type": "object",
-                    "description": "Atualizar dados do usuário",
-                    "example": {
-                        "name": "Nome do usuário",
-                        "bio": "Bio do usuário",
-                        "username": "Nome de usuário"
-                    }
-                }
+                  {
+                      "name": "id",
+                      "in": "path",
+                      "required": true,
+                      "type": "string"
+                  },
+                  {
+                      "name": "data",
+                      "in": "body",
+                      "required": true,
+                      "type": "object",
+                      "description": "Atualizar dados do usuário",
+                      "example": {
+                          "name": "Nome do usuário",
+                          "bio": "Bio do usuário",
+                          "username": "Nome de usuário"
+                      }
+                  }
               ],
               "responses": {
-                "200": {
-                  "description": "Perfil do usuário atualizado com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "200": {
+                      "description": "Perfil do usuário atualizado com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-          },
-          "/users/user_profile/{user_id}": {
-            "get": {
+          }
+      },
+      "/users/user_profile/{user_id}": {
+          "get": {
               "summary": "Obtém o perfil do usuário",
               "description": "Obtém o perfil do usuário com base no ID fornecido",
               "tags": [
-                "users"
+                  "users"
               ],
               "parameters": [
-                {
-                  "name": "user_id",
-                  "in": "path",
-                  "required": true,
-                  "type": "string"
-                }
+                  {
+                      "name": "user_id",
+                      "in": "path",
+                      "required": true,
+                      "type": "string"
+                  }
               ],
               "responses": {
-                "200": {
-                  "description": "Perfil do usuário retornado com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "200": {
+                      "description": "Perfil do usuário retornado com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-          },
-          "/users/users_barn/{user_id}": {
-            "get": {
-              "summary": "Obtém o celeiro dos usuários",
-              "description": "Obtém o celeiro dos usuários com base no ID do usuário fornecido",
+          }
+      },
+      "/users/users_barn/{user_id}": {
+          "get": {
+              "summary": "Obtém o Armazém dos usuários",
+              "description": "Obtém o Armazém dos usuários com base no ID do usuário fornecido",
               "tags": [
-                "users"
+                  "users"
               ],
               "parameters": [
-                {
-                  "name": "user_id",
-                  "in": "path",
-                  "required": true,
-                  "type": "string"
-                }
+                  {
+                      "name": "user_id",
+                      "in": "path",
+                      "required": true,
+                      "type": "string"
+                  }
               ],
               "responses": {
-                "200": {
-                  "description": "Celeiro dos usuários retornado com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "200": {
+                      "description": "Armazém dos usuários retornado com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
-            }
-          },
-          "/users/update_photo_user": {
-            "put": {
+          }
+      },
+      "/users/update_photo_user": {
+          "put": {
               "summary": "Atualiza a foto do usuário",
               "description": "Atualiza a foto do usuário com base nos parâmetros fornecidos",
               "tags": [
-                "users"
+                  "users"
               ],
               "parameters": [
-                {
-                    "name": "update photo user",
-                    "in": "body",
-                    "required": true,
-                    "type": "object",
-                    "description": "Atualizar foto do usuário",
-                    "example": {
-                        "id": "Id do usuário",
-                        "photo": "Foto do usuário"
-                    }
-                }
+                  {
+                      "name": "update photo user",
+                      "in": "body",
+                      "required": true,
+                      "type": "object",
+                      "description": "Atualizar foto do usuário",
+                      "example": {
+                          "id": "Id do usuário",
+                          "photo": "Foto do usuário"
+                      }
+                  }
               ],
               "responses": {
-                "201": {
-                  "description": "Foto do usuário atualizada com sucesso"
-                },
-                "500": {
-                  "description": "Erro interno do servidor"
-                }
+                  "201": {
+                      "description": "Foto do usuário atualizada com sucesso"
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor"
+                  }
               }
+          }
+      },
+      "/files": {
+          "post": {
+              "summary": "Cria um novo arquivo",
+              "description": "Cria um novo fileId com base no arquivo escolhido pelo usuário",
+              "tags": [
+                  "files"
+              ],
+              "consumes": [
+                  "multipart/form-data"
+              ],
+              "parameters": [
+                  {
+                      "name": "file",
+                      "in": "formData",
+                      "required": true,
+                      "type": "file",
+                      "description": "Cria um novo fileId com base no arquivo escolhido pelo usuário"
+                  }
+              ],
+              "responses": {
+                  "201": {
+                      "description": "Arquivo enviado com sucesso"
+                  },
+                  "400": {
+                      "description": "Servidor não foi capaz de processar a requisição pedida"
+                  }
+              }
+          }
+      },
+      "/files/{filename}": {
+          "delete": {
+              "summary": "Deletar arquivo",
+              "description": "Endpoint para deletar um arquivo",
+              "tags": [
+                  "files"
+              ],
+              "parameters": [
+                  {
+                      "name": "filename",
+                      "in": "path",
+                      "required": true,
+                      "type": "string",
+                      "description": "Nome do arquivo a ser deletado"
+                  }
+              ],
+              "responses": {
+                  "204": {
+                      "description": "Arquivo deletado com sucesso"
+                  },
+                  "404": {
+                      "description": "Arquivo não encontrado",
+                      "schema": {
+                          "type": "object",
+                          "properties": {
+                              "error": {
+                                  "type": "string"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor",
+                      "schema": {
+                          "type": "object",
+                          "properties": {
+                              "error": {
+                                  "type": "string"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "Opção de upload inválida",
+                      "schema": {
+                          "type": "object",
+                          "properties": {
+                              "error": {
+                                  "type": "string"
+                              }
+                          }
+                      }
+                  }
+              },
+            "get": {
+                "summary": "Recupera o nome do arquivo",
+                "description": "Recupera o nome do arquivo escolhido pelo usuário",
+                "tags": [
+                    "files"
+                ],
+                "parameters": [
+                    {
+                        "name": "filename",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Nome do arquivo retornado com sucesso"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor"
+                    }
+                }
             }
-        }
-    }
+          }
+      },
+      "/files/classifiers": {
+          "post": {
+              "summary": "Classificar arquivo",
+              "description": "Endpoint para classificar um arquivo usando uma API externa",
+              "tags": [
+                  "files"
+              ],
+              "parameters": [
+                  {
+                      "name": "file_url",
+                      "in": "query",
+                      "required": true,
+                      "type": "string",
+                      "description": "URL do arquivo a ser classificado"
+                  }
+              ],
+              "responses": {
+                  "201": {
+                      "description": "Classificação bem-sucedida",
+                      "schema": {
+                          "type": "object",
+                          "properties": {
+                              "description": {
+                                  "type": "string"
+                              },
+                              "category": {
+                                  "type": "string"
+                              },
+                              "probability": {
+                                  "type": "number"
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "Erro interno do servidor",
+                      "schema": {
+                          "type": "object",
+                          "properties": {
+                              "error": {
+                                  "type": "string"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/files/list": {
+          "get": {
+              "summary": "Listar arquivos",
+              "description": "Endpoint para listar os arquivos disponíveis",
+              "tags": [
+                  "files"
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Lista de arquivos",
+                      "schema": {
+                          "type": "array",
+                          "items": {
+                              "type": "object",
+                              "properties": {
+                                  "name": {
+                                      "type": "string"
+                                  },
+                                  "url": {
+                                      "type": "string"
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "Opção de upload inválida",
+                      "schema": {
+                          "type": "object",
+                          "properties": {
+                              "error": {
+                                  "type": "string"
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      }
+  }
 }
